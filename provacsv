@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Aug 17 15:45:08 2019
+
+@author: guido
+"""
+
+import csv ,re
+import pandas as pd
+import numpy as np
+fields = ["Occurrence","Lemma","POS","POSX","Form"] 
+rows = [] 
+  
+# reading csv file 
+with open("/home/guido/Progetto Unitexto/textdata/corpus.conllu", 'r') as csvfile: 
+    # creating a csv reader object 
+    csvreader = csv.reader(csvfile) 
+  
+    # extracting each data row one by one 
+    for row in csvreader:
+        try:
+       
+            a=re.match("# .*",row[0])
+            if not(a!=None or row==[]):    
+               # print(row)
+                rows.append(row) 
+        except:
+            print
+    # get total number of rows 
+    #print("Total no. of rows: %d"%(csvreader.line_num)) 
+corpus=[]
+for el in rows:
+    a=el[0].split("\t")
+    if (len(a)==10):
+        corpus.append(a)
+
+occurrences=[]
+lemmas=[]
+pos=[]
+posx=[]
+form=[]
+for el in corpus:
+    occurrences.append(el[1])
+    lemmas.append(el[2])
+    pos.append(el[3])
+    posx.append(el[4])
+    form.append(el[5])
+postot={'occurrence': occurrences, 'lemma': lemmas, 'pos':pos,'posx':posx,'form':form}
+df1=pd.DataFrame(postot, columns=['occurrence','lemma','pos','posx','form'])
+df1.to_csv(path_or_buf="/home/guido/Progetto Unitexto/textdata/corpus.prova", sep="\t")
+df1.pos.value_counts()
+
+print (df1.occurrence.value_counts())
+print (pd.factorize(occurrences)[0])
+numbers = np.unique(occurrences, return_inverse=True)
+print ("la lunghezza di numbers è "+ str(len(numbers)))
+
+
